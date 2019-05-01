@@ -34,7 +34,7 @@ Assignments:
 Main references: [MPI 1.1 Documentation](https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/mpi-report.html), [MPI 1.1 APIs description](https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/node182.html).
 
 ### Day 4
-During day3 an overview of best practises of parallel programming for distributed memory system was given with particular focus on how to approach a parallel problem that require data exchange between neighbour processes, local indexing Vs global indexing, how to handle ressts effiently, sequentialized I/O from the root process, taks farming, domain decomposition, glocal data Vs replicated data and non-blocking MPI communication.      
+During day4 an overview of best practises of parallel programming for distributed memory system was given with particular focus on how to approach a parallel problem that require data exchange between neighbour processes, local indexing Vs global indexing, how to handle ressts effiently, sequentialized I/O from the root process, taks farming, domain decomposition, glocal data Vs replicated data and non-blocking MPI communication.      
 
 Assignments:  
 - Implement a code to initialize a distributed identity matrix of size (N,N). Print the matrix ordered on standard output if N is smaller than 10, otherwise on a binary file. (Plus) Implement the I/O overlapping the receiving data on process 0 with no-blocking communication, therefore overlapping I/O operations on disk with data echange between the processes. 
