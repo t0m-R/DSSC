@@ -39,7 +39,7 @@ During day3 an overview of best practises of parallel programming for distribute
 Assignments:  
 - Implement a code to initialize a distributed identity matrix of size (N,N). Print the matrix ordered on standard output if N is smaller than 10, otherwise on a binary file. (Plus) Implement the I/O overlapping the receiving data on process 0 with no-blocking communication, therefore overlapping I/O operations on disk with data echange between the processes. 
 
-- Implement a communication pattern of all_reduce using non-blocking point to point communication, first exchanging one single element (i.e., the rank Id of a process) among processes. Try to optimize the code for sending in the ring a large set of data and
+- Implement a communication pattern of all_reduce using non-blocking point to point communication, first exchanging one single element (i.e., the rank Id of a given process) among processes. Try to optimize the code for sending in the ring a large set of data and
 overlapping the computation (Σ) and the communication (send-recv). In case of a dataset larger than one element the local sum is
 considered a vector sum (element by element).
 
