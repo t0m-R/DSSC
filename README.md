@@ -29,6 +29,18 @@ Main references: [LLNL OpenMP Tutorial](https://computing.llnl.gov/tutorials/ope
 During day3 basic notions of parallel programming for distributed memory system have been introduced toghether with the essential sintaxt for writing a simple MPI program. Particular focus was given to the execution flow of an MPI program as well as the concept of message and the MPI communicators. The MPI main models of communication were introduced such as blocking point-to-point and collective communications in the form of both the reduction and the broadcast operations.  
 
 Assignments:  
-Compute the approximation of PI using the midpoint method (with a REALLY large number of rectangles). Reduce the final result in the last process (size – 1) and print the final output from 0! Compare timing with the OpenMP version, scaling the MPI version up to 2 nodes of Ulysses (excluding operation needed for I/O). Reccomendation: use 101 as MPI_TAG.  
+- Compute the approximation of PI using the midpoint method (with a REALLY large number of rectangles). Reduce the final result in the last process (size – 1) and print the final output from 0! Compare timing with the OpenMP version, scaling the MPI version up to 2 nodes of Ulysses (excluding operation needed for I/O). Reccomendation: use 101 as MPI_TAG.  
 
-Main references: [MPI 1.1 Documentation](https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/mpi-report.html), [MPI 1.1 APIs description](https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/node182.html),  
+Main references: [MPI 1.1 Documentation](https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/mpi-report.html), [MPI 1.1 APIs description](https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/node182.html).
+
+### Day 4
+During day3 an overview of best practises of parallel programming for distributed memory system was given with particular focus on how to approach a parallel problem that require data exchange between neighbour processes, local indexing Vs global indexing, how to handle ressts effiently, sequentialized I/O from the root process, taks farming, domain decomposition, glocal data Vs replicated data and non-blocking MPI communication.      
+
+Assignments:  
+- Implement a code to initialize a distributed identity matrix of size (N,N). Print the matrix ordered on standard output if N is smaller than 10, otherwise on a binary file. (Plus) Implement the I/O overlapping the receiving data on process 0 with no-blocking communication, therefore overlapping I/O operations on disk with data echange between the processes. 
+
+- Implement a communication pattern of all_reduce using non-blocking point to point communication, first exchanging one single element (i.e., the rank Id of a process) among processes. Try to optimize the code for sending in the ring a large set of data and
+overlapping the computation (Σ) and the communication (send-recv). In case of a dataset larger than one element the local sum is
+considered a vector sum (element by element).
+
+Main references: [MPI 1.1 Documentation](https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/mpi-report.html), [MPI 1.1 APIs description](https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/node182.html).
