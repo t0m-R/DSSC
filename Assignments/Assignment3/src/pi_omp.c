@@ -21,12 +21,15 @@ int main() {
     const int a = 0;
     const int b = 1;
     double pi = 0;
-    int num_threads = omp_get_num_threads();
-
+    int num_threads;
+#pragma omp parallel
+  {
+    num_threads = omp_get_num_threads();
+  };
     // ATOMIC PI.
     double start = omp_get_wtime();
 
-#pragma omp parallel default(none) shared(a, b, N, pi)
+#pragma omp parallel
     {
         int tid = omp_get_thread_num();
         int threads = omp_get_num_threads();

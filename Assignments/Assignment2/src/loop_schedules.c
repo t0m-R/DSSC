@@ -1,7 +1,6 @@
-#include <stdlib.h>
 #include <stdio.h>
-
 #include <omp.h>
+
 
 void print_usage( int * a, int N, int nthreads ) {
 
@@ -19,17 +18,22 @@ void print_usage( int * a, int N, int nthreads ) {
     }
 }
 
+
 int main( int argc, char * argv[] ) {
 
     const int N = 40;
     int a[N];
     int thread_id = 0;
-    int nthreads = 1;
-    int threads = omp_get_num_threads();
+    int num_threads;
+
+#pragma omp parallel
+  {
+    num_threads = omp_get_num_threads();
+  };
 
     // SUMMARY.
-    char *sep = "-------------------------------------------\n";
-    printf("%sN: %i\t\t\t  THREADS: %i\n%s", sep, N, threads, sep);
+    char *sep = "--------------------------------------------\n";
+    printf("%sN: %i\t\t\t  THREADS: %i\n%s", sep, N, num_threads, sep);
 
     // SERIAL.
     for (int i = 0; i < N; ++i) {
@@ -37,14 +41,12 @@ int main( int argc, char * argv[] ) {
     }
 
     printf("SERIAL\n%s", sep);
-    print_usage(a, N, nthreads);
+    print_usage(a, N, 1);
 
-
-// STATIC.
 #pragma omp parallel
     {
-        nthreads = omp_get_num_threads();
 
+// STATIC.
 #pragma omp for schedule(static)
         for (int i = 0; i < N; ++i) {
             a[i] = omp_get_thread_num();
@@ -53,9 +55,8 @@ int main( int argc, char * argv[] ) {
 #pragma omp single
         {
             printf("\n%sSTATIC\n%s", sep, sep);
-            print_usage(a, N, nthreads);
+            print_usage(a, N, num_threads);
         }
-
 
 // STATIC, CHUNK: 1.
 #pragma omp for schedule(static, 1)
@@ -66,9 +67,8 @@ int main( int argc, char * argv[] ) {
 #pragma omp single
         {
             printf("\n%sSTATIC \t\t\t\t\t CHUNK SIZE: 1\n%s", sep, sep);
-            print_usage(a, N, nthreads);
+            print_usage(a, N, num_threads);
         }
-
 
 // STATIC, CHUNK: 10.
 #pragma omp for schedule(static, 10)
@@ -79,9 +79,8 @@ int main( int argc, char * argv[] ) {
 #pragma omp single
         {
             printf("\n%sSTATIC \t\t\t\t\t CHUNK SIZE: 10\n%s", sep, sep);
-            print_usage(a, N, nthreads);
+            print_usage(a, N, num_threads);
         }
-
 
 // DYNAMIC.
 #pragma omp for schedule(dynamic)
@@ -92,7 +91,7 @@ int main( int argc, char * argv[] ) {
 #pragma omp single
         {
             printf("\n%sDYNAMIC\n%s", sep, sep);
-            print_usage(a, N, nthreads);
+            print_usage(a, N, num_threads);
         }
 
 
@@ -105,7 +104,7 @@ int main( int argc, char * argv[] ) {
 #pragma omp single
         {
             printf("\n%sDYNAMIC \t\t\t\t\t CHUNK SIZE: 1\n%s", sep, sep);
-            print_usage(a, N, nthreads);
+            print_usage(a, N, num_threads);
         }
 
 
@@ -118,7 +117,7 @@ int main( int argc, char * argv[] ) {
 #pragma omp single
         {
             printf("\n%sDYNAMIC \t\t\t\t\t CHUNK SIZE: 10\n%s", sep, sep);
-            print_usage(a, N, nthreads);
+            print_usage(a, N, num_threads);
         }
 
     }
