@@ -3,20 +3,20 @@
 #include<mpi.h>
 
 
-void print_matrix(int* M, int size) {
-    for (size_t i = 0; i < size; i++) {
-        for (size_t j = 0; j < size; j++) {
-            printf("%d  ", M[i * size + j]);
+void print_matrix(int* M, int rows, int cols) {
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            printf("%d  ", M[i * cols + j]);
         }
         printf("\n");
     }
 }
 
 
-void print_matrix_file(int* M, int size, FILE* file) {
-    for (size_t i = 0; i < size; i++) {
-        for (size_t j = 0; j < size; j++) {
-            fprintf(file, "%d  ", M[i * size + j]);
+void print_matrix_file(int* M, int rows, int cols, FILE* file) {
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            fprintf(file, "%d  ", M[i * cols + j]);
         }
         fprintf(file, "\n");
     }
@@ -63,22 +63,22 @@ int main(int argc, char* argv[]) {
         if (N < 10) {
 
             // CONSOLE OUTPUT.
-            print_matrix(M, local_N);
+            print_matrix(M, local_N, N);
             for (int proc = 1; proc < n_proc; proc++) {
                 if (proc >= modulus && modulus != 0) cor_size = 1;
                 MPI_Recv(M, local_N * N, MPI_INT, proc, 101, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                print_matrix(M, local_N - cor_size);
+                print_matrix(M, local_N - cor_size, N);
             }
 
         } else {
 
             // FILE OUTPUT.
             FILE* file = fopen("matrix.txt", "w");
-            print_matrix_file(M, local_N, file);
+            print_matrix_file(M, local_N, N, file);
             for (int proc = 1; proc < n_proc; proc++) {
                 if (proc >= modulus && modulus != 0) cor_size = 1; // Correct printing in case of modulus.
                 MPI_Recv(M, local_N * N, MPI_INT, proc, 101, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                print_matrix_file(M, local_N - cor_size, file);
+                print_matrix_file(M, local_N - cor_size, N, file);
             }
             fclose(file);
 
