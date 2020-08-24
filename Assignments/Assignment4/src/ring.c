@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
     int rank = 0;
     int n_proc = 1;
     int root = 0;
-
+    int i,j,z;
 
     MPI_Init(&argc, &argv);
 
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
     int* sum = (int*)malloc(sizeof(int) * SIZE);
 
     // Initialize send_buffer and sum.
-    for(int i = 0; i < SIZE; i++) {
+    for( i = 0; i < SIZE; i++) {
         send_buffer[i] = rank;
         sum[i] = 0;
     }
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
     double start = MPI_Wtime();
 
     // Cycle the whole chain.
-    for (int j = 0; j < n_proc; j++) {
+    for ( j = 0; j < n_proc; j++) {
 
         // send_buffer -> RECEIVER
         MPI_Isend(send_buffer, SIZE, MPI_INT, RECEIVER(rank, n_proc), 101,
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
                   MPI_COMM_WORLD, &requestRecv);
 
         // Update sum.
-        for (int z = 0; z < SIZE; z++) {
+        for ( z = 0; z < SIZE; z++) {
             sum[z] += send_buffer[z];
         }
 

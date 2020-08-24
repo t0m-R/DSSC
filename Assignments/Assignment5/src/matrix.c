@@ -4,8 +4,9 @@
 
 
 void print_matrix(int* M, int rows, int cols) {
-    for (size_t i = 0; i < rows; i++) {
-        for (size_t j = 0; j < cols; j++) {
+    int i,j;
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
             printf("%d  ", M[i * cols + j]);
         }
         printf("\n");
@@ -14,8 +15,9 @@ void print_matrix(int* M, int rows, int cols) {
 
 
 void print_matrix_file(int* M, int rows, int cols, FILE* file) {
-    for (size_t i = 0; i < rows; i++) {
-        for (size_t j = 0; j < cols; j++) {
+    int i,j;
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
             fprintf(file, "%d  ", M[i * cols + j]);
         }
         fprintf(file, "\n");
@@ -29,6 +31,7 @@ int main(int argc, char* argv[]) {
     int rank = 0;
     int n_proc = 1;
     int root = 0;
+    int i,j,proc;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -46,8 +49,8 @@ int main(int argc, char* argv[]) {
     int cor_size = 0;
     if (rank >= modulus && modulus != 0) cor_size = 1;
 
-    for (size_t i = 0; i < local_N; i++) {
-        for (size_t j = 0; j < N; j++) {
+    for (i = 0; i < local_N; i++) {
+        for (j = 0; j < N; j++) {
             if (j == i + rank * local_N + cor_size * modulus) {
                 M[i * N + j] = 1;
             } else {
@@ -64,7 +67,7 @@ int main(int argc, char* argv[]) {
 
             // CONSOLE OUTPUT.
             print_matrix(M, local_N, N);
-            for (int proc = 1; proc < n_proc; proc++) {
+            for (proc = 1; proc < n_proc; proc++) {
                 if (proc >= modulus && modulus != 0) cor_size = 1;
                 MPI_Recv(M, local_N * N, MPI_INT, proc, 101, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 print_matrix(M, local_N - cor_size, N);
@@ -75,7 +78,7 @@ int main(int argc, char* argv[]) {
             // FILE OUTPUT.
             FILE* file = fopen("matrix.txt", "w");
             print_matrix_file(M, local_N, N, file);
-            for (int proc = 1; proc < n_proc; proc++) {
+            for (proc = 1; proc < n_proc; proc++) {
                 if (proc >= modulus && modulus != 0) cor_size = 1; // Correct printing in case of modulus.
                 MPI_Recv(M, local_N * N, MPI_INT, proc, 101, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 print_matrix_file(M, local_N - cor_size, N, file);
