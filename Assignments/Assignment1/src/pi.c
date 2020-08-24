@@ -21,7 +21,7 @@ double atomic_pi(const double a, const double b, const unsigned int N) {
 
   double pi = 0;
 
-#pragma omp parallel default(none) shared(a, b, N, pi)
+#pragma omp parallel
   {
     int tid = omp_get_thread_num();
     int threads = omp_get_num_threads();
@@ -44,7 +44,7 @@ double critical_pi(const double a, const double b, const unsigned int N) {
 
   double pi = 0;
 
-#pragma omp parallel default(none) shared(a, b, N, pi)
+#pragma omp parallel
   {
     int tid = omp_get_thread_num();
     int threads = omp_get_num_threads();
@@ -67,7 +67,7 @@ double reduction_pi(const double a, const double b, const unsigned int N) {
 
   double pi = 0;
 
-#pragma omp parallel default(none) shared(a,b,N) reduction(+:pi)
+#pragma omp parallel reduction(+:pi)
   {
     int tid = omp_get_thread_num();
     int threads = omp_get_num_threads();
@@ -89,7 +89,12 @@ int main() {
   const int a = 0;
   const int b = 1;
   double start;
-  int threads = omp_get_num_threads();
+  int num_threads;
+
+#pragma omp parallel
+  {
+    num_threads = omp_get_num_threads();
+  };
 
   // SERIAL.
   start = omp_get_wtime();
@@ -112,13 +117,13 @@ int main() {
   double reduction_time = omp_get_wtime() - start;
 
   // SUMMARY.
-  char *sep = "-------------------------------------\n";
-  printf("%sN: %i\t\t\t  THREADS: %i\n%s", sep, N, threads, sep);
-  printf("\t\t\t\t\t  PI\t\t TIME \n");
-  printf("SERIAL\t\t%.10f\t%fs\n", serial, serial_time);
-  printf("ATOMIC\t\t%.10f\t%fs\n", atomic, atomic_time);
-  printf("CRITICAL\t%.10f\t%fs\n", critical, critical_time);
-  printf("REDUCTION\t%.10f\t%fs\n", reduction, reduction_time);
+  char *sep = "---------------------------------------------\n";
+  printf("%sN: %i\t\t\t  THREADS: %i\n%s", sep, N, num_threads, sep);
+  printf("\t\t\t  PI\t\t TIME \n");
+  printf("SERIAL\t\t%.10f\t    %fs\n", serial, serial_time);
+  printf("ATOMIC\t\t%.10f\t    %fs\n", atomic, atomic_time);
+  printf("CRITICAL\t%.10f\t    %fs\n", critical, critical_time);
+  printf("REDUCTION\t%.10f\t    %fs\n", reduction, reduction_time);
   printf("%s\n", sep);
 
   return 0;
